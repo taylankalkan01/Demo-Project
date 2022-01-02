@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class UserService {
 
-    private static final Logger logger = (Logger) LoggerFactory.getLogger(UserService.class);
+    //private static final Logger logger = (Logger) LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
     private final UserDtoConverter userDtoConverter;
@@ -43,7 +43,14 @@ public class UserService {
     }
 
     public List<UserDto> getAllUsers() {
-        return userRepository.findAll().stream().map(userDtoConverter::convert).collect(Collectors.toList());
+        /*
+        return userRepository.findAll()
+                .stream()
+                .map(userDtoConverter::convert)
+                .collect(Collectors.toList());
+
+         */
+        return userDtoConverter.convert(userRepository.findAll());
     }
 
     public UserDto getUserById(Long id) {
@@ -57,21 +64,22 @@ public class UserService {
                 userRequest.getFirstName(),
                 userRequest.getLastName(),
                 userRequest.getMiddleName(),
-                true);
+                false);
         return userDtoConverter.convert(userRepository.save(user));
     }
 
     public UserDto updateUser(Long id, UpdateUserRequest updateUserRequest) {
         User user = findUserById(id);
         if (!user.getActive()){
-            logger.warning("This user is not active!");
+            //logger.warning("This user is not active!");
             throw new UserIsNotActiveException("This user is not active!");
         }
         User updatedUser = new User(user.getId(),
                 user.getMail(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getMiddleName());
+                user.getMiddleName(),
+                user.getActive());
         return userDtoConverter.convert(userRepository.save(updatedUser));
 
 

@@ -2,6 +2,7 @@ package com.example.DemoProject.model;
 
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -14,7 +15,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String middleName;
-    private Boolean isActive;
+    private Boolean isActive = true;
 
     public User(Long id, String mail, String firstName, String lastName, String middleName, Boolean isActive) {
         this.id = id;
@@ -100,5 +101,21 @@ public class User {
         isActive = active;
         return this;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(mail, user.mail) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(middleName, user.middleName) && Objects.equals(isActive, user.isActive);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, mail, firstName, lastName, middleName, isActive);
+    }
+
+
 }
 

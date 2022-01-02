@@ -8,6 +8,17 @@ public class UserDto {
     private String lastName;
     private String middleName;
 
+    @Override
+    public String toString() {
+        return "UserDto{" +
+                       "id=" + id +
+                       ", mail='" + mail + '\'' +
+                       ", firstName='" + firstName + '\'' +
+                       ", lastName='" + lastName + '\'' +
+                       ", middleName='" + middleName + '\'' +
+                       '}';
+    }
+
     public Long getId() {
         return id;
     }
