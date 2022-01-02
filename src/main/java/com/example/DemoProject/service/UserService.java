@@ -5,16 +5,23 @@ import com.example.DemoProject.dto.UserDto;
 import com.example.DemoProject.dto.converter.UserDtoConverter;
 import com.example.DemoProject.dto.request.CreateUserRequest;
 import com.example.DemoProject.dto.request.UpdateUserRequest;
+import com.example.DemoProject.exception.UserIsNotActiveException;
 import com.example.DemoProject.exception.UserNotFoundException;
 import com.example.DemoProject.model.User;
 import com.example.DemoProject.repos.UserRepository;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
+
 public class UserService {
+
+    private static final Logger logger = (Logger) LoggerFactory.getLogger(UserService.class);
+
     private final UserRepository userRepository;
     private final UserDtoConverter userDtoConverter;
 
@@ -49,12 +56,17 @@ public class UserService {
                 userRequest.getMail(),
                 userRequest.getFirstName(),
                 userRequest.getLastName(),
-                userRequest.getMiddleName());
+                userRequest.getMiddleName(),
+                true);
         return userDtoConverter.convert(userRepository.save(user));
     }
 
     public UserDto updateUser(Long id, UpdateUserRequest updateUserRequest) {
         User user = findUserById(id);
+        if (!user.getActive()){
+            logger.warning("This user is not active!");
+            throw new UserIsNotActiveException("This user is not active!");
+        }
         User updatedUser = new User(user.getId(),
                 user.getMail(),
                 user.getFirstName(),
@@ -65,15 +77,49 @@ public class UserService {
 
     }
 
-    /*
-    public void deactiveUser(Long id) {
+    public void deactivateUser(Long id) {
+        User user = findUserById(id);
+
+        User updatedUser = new User(user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getMiddleName(),
+                user.getMail(),
+                false);
+
+        userRepository.save(updatedUser);
+
     }
+    public void activeUser(Long id) {
+        User user = findUserById(id);
+
+        User updatedUser = new User(user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getMiddleName(),
+                user.getMail(),
+                true);
+
+        userRepository.save(updatedUser);
+    }
+
+    //checking
+    private boolean doesUserExist(Long id){
+        return userRepository.existsById(id);
+
+    }
+
 
     public void deleteUser(Long id) {
+        if (doesUserExist(id)){
+            userRepository.deleteById(id);
+        } else{
+            throw new UserNotFoundException("User id: " + id + " could not be found!");
+        }
+
+
+
     }
-
-
-     */
 
 }
 

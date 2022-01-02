@@ -14,6 +14,17 @@ public class User {
     private String firstName;
     private String lastName;
     private String middleName;
+    private Boolean isActive;
+
+    public User(Long id, String mail, String firstName, String lastName, String middleName, Boolean isActive) {
+        this.id = id;
+        this.mail = mail;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.middleName = middleName;
+        this.isActive = isActive;
+    }
+
 
     public User(Long id, String mail, String firstName, String lastName, String middleName) {
         this.id = id;
@@ -79,6 +90,14 @@ public class User {
 
     public User setMiddleName(String middleName) {
         this.middleName = middleName;
+        return this;
+    }
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public User setActive(Boolean active) {
+        isActive = active;
         return this;
     }
 }
